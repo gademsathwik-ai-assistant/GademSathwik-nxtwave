@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: campusresolve-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: campusresolve
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - campusresolve-network
+
+  # Redis Cache & BullMQ Queue Broker
+  redis:
+    image: redis:7.2-alpine
+    container_name: campusresolve-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - campusresolve-network
+
+  # Backend Express API Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: campusresolve-api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=development
+      - CLIENT_URL=http://localhost:3000
+      - MONGO_URI=mongodb://mongodb:27017/campusresolve
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=campusresolve_jwt_super_secret_key_2026_secure
+      - JWT_EXPIRES_IN=7d
+    depends_on:
+      - mongodb
+      - redis
+    volumes:
+      - ./server/uploads:/app/uploads
+    networks:
+      - campusresolve-network
+
+  # Frontend Next.js Application
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: campusresolve-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+      - NEXT_PUBLIC_SOCKET_URL=http://localhost:5000
+    depends_on:
+      - server
+    networks:
+      - campusresolve-network
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  campusresolve-network:
+    driver: bridge
