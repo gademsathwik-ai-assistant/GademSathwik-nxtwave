@@ -13,6 +13,8 @@ import { initBackgroundWorkers, stopBackgroundWorkers } from './jobs/worker';
 import { seedDatabase } from './utils/seedData';
 import apiRouter from './routes';
 
+import { User } from './models/User';
+
 const app = express();
 const httpServer = http.createServer(app);
 
