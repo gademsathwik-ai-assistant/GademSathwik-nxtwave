@@ -64,6 +64,21 @@ app.use('/api', apiRouter);
 app.get("/", (req, res) => {
   res.send("Backend is running!");
 });
+// Reset Password route
+app.post("/api/auth/reset", async (req, res) => {
+  const { email, newPassword } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.password = newPassword;
+    await user.save();
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (error) {
+    res.status(400).json({ message: "Password reset failed", error: error.message });
+  }
+});
 
 // 6. Global Error Handler
 app.use(errorHandler);
