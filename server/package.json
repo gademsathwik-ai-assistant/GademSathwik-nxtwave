@@ -10,7 +10,15 @@
     "seed": "tsx src/utils/seedData.ts",
     "test": "vitest run"
   },
-  "keywords": ["college", "complaints", "campus", "express", "socketio", "typescript", "mongodb"],
+  "keywords": [
+    "college",
+    "complaints",
+    "campus",
+    "express",
+    "socketio",
+    "typescript",
+    "mongodb"
+  ],
   "author": "CampusResolve Team",
   "license": "ISC",
   "dependencies": {
@@ -36,7 +44,7 @@
     "@types/multer": "^1.4.12",
     "@types/node": "^22.13.4",
     "mongodb-memory-server": "^10.1.4",
-    "tsx": "^4.19.3",
+    "tsx": "^4.23.13",
     "typescript": "^5.7.3",
     "vitest": "^3.0.6"
   }
