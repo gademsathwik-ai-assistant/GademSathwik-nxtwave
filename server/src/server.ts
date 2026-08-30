@@ -60,6 +60,10 @@ app.use((req, _res, next) => {
 
 // 5. Mount API Routes
 app.use('/api', apiRouter);
+// Root route
+app.get("/", (req, res) => {
+  res.send("Backend is running!");
+});
 
 // 6. Global Error Handler
 app.use(errorHandler);
